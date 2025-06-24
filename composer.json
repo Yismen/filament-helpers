@@ -10,7 +10,6 @@
         }
     ],
     "require": {
-        "spatie/laravel-package-tools": "^1.9",
         "filament/filament": "^3.0"
     },
     "require-dev": {
@@ -28,13 +27,13 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Dainsys\\FilamentHelpers\\Tests\\": "tests/"
+            "Dainsys\\FilamentHelpers\\Tests\\": "tests"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Dainsys\\FilamentHelpers\\FilamentHelperstServiceProvider"
+                "Dainsys\\FilamentHelpers\\FilamentHelpersServiceProvider"
             ]
         }
     },
