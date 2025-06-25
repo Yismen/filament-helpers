@@ -1,0 +1,161 @@
+<?php
+
+use App\Models\User;
+use App\Models\{{ Model }};
+use Livewire\Livewire;
+use Filament\Facades\Filament;
+use Spatie\Permission\Models\Permission;
+use App\Filament\{{ panel_as_title }}\Resources\{{ Model }}Resource;
+
+describe('{{ Model }} Resource', function () {
+    beforeEach(function () {
+        Filament::setCurrentPanel(
+            Filament::getPanel('{{ panel }}')
+        );
+        // Create a basic user for auth
+        $this->user = User::factory()->create();
+        // Create a user who can manage posts
+        $this->permitted_user = User::factory()->create();
+
+        $this->model = {{ Model }}::factory()->create();
+
+        $this->routes = [
+            'index' => {{ Model }}Resource::getUrl('index'),
+            'create' => {{ Model }}Resource::getUrl('create'),
+            'edit' => {{ Model }}Resource::getUrl('edit', ['record' => $this->model->getRouteKey()]),
+            'view' => {{ Model }}Resource::getUrl('view', ['record' => $this->model->getRouteKey()]),
+        ];
+    });
+
+    describe('authentication', function() {
+        it('redirects guests to login page', function ($route) {
+            $this->get($this->routes[$route])
+                ->assertRedirect(route('filament.{{ panel }}.auth.login'));
+        })->with([
+            'index',
+            'create',
+            'edit',
+            'view',
+        ]);
+
+        test('user without permission gets 403', function ($route) {
+            $this->actingAs($this->user)
+            ->get($this->routes[$route])
+            ->assertForbidden();
+        })->with([
+            'index',
+            'create',
+            'edit',
+            'view',
+        ]);
+    });
+
+    describe('authorization', function() {
+        beforeEach(function() {
+            $permissions = [
+                'index' => 'viewAny',
+                'create' => 'create',
+                'edit' => 'update',
+                'view' => 'view',
+            ];
+            // Assuming you use Spatie permissions and filament-shield:
+            foreach ($permissions as $route => $permission) {
+                // $permission = str($permission)->append('{{ Model }}')->snake()->toString();
+                Permission::create([
+                    'name' => $permission,
+                    'guard_name' => 'web',
+                ]);
+                $this->permitted_user->givePermissionTo($permission);
+            }
+
+        });
+
+        test('authorized user can see {{ Model }}s index and listing', function () {
+            $this->actingAs($this->permitted_user);
+
+            // Using Livewire list component
+            Livewire::test(\App\Filament\{{ panel_as_title }}\Resources\{{ Model }}Resource\Pages\List{{ Model }}s::class)
+                ->assertSee('{{ Model }}s');
+        });
+
+        test('authorized user can create a {{ model_as_lowercase }}', function () {
+            $this->actingAs($this->permitted_user);
+
+            $data = [
+                'name'   => 'New Pest {{ Model }}',
+                'invoice_template' => 'Content of the new post',
+            ];
+
+            Livewire::test(\App\Filament\{{ panel_as_title }}\Resources\{{ Model }}Resource\Pages\Create{{ Model }}::class)
+                ->fillForm($data)
+                ->call('create')
+                ->assertHasNoErrors(); // adjust if your redirect differs
+
+            $this->assertDatabaseHas({{ Model }}::class, $data);
+        });
+
+        test('authorized user can update a {{ model_as_lowercase }}', function () {
+            $this->actingAs($this->permitted_user);
+
+            $data = [
+                'name'   => 'Updated Name',
+            ];
+
+            Livewire::test(\App\Filament\{{ panel_as_title }}\Resources\{{ Model }}Resource\Pages\Edit{{ Model }}::class, [
+                    'record' => $this->model->getKey(),
+                ])
+                ->fillForm($data)
+                ->call('save')
+                ->assertHasNoErrors();
+
+            $this->model->refresh();
+            expect($this->model->name)->toBe($data['name']);
+            expect($this->model->invoice_template)->toBe($data['invoice_template']);
+        });
+
+        test('detail page displays the {{ model_as_lowercase }}', function () {
+            $this->actingAs($this->permitted_user);
+
+            Livewire::test(\App\Filament\{{ panel_as_title }}\Resources\{{ Model }}Resource\Pages\View{{ Model }}::class, [
+                    'record' => $this->model->getKey(),
+                ])
+                ->assertOk()
+                // ->assertViewHas(['name' => $this->model->name])
+                // ->assertSee($this->model->name)
+                ;
+        });
+
+        describe('valications', function() {
+            test('validation errors are shown for required fields', function ($field) {
+                $this->actingAs($this->permitted_user);
+
+                Livewire::test(\App\Filament\{{ panel_as_title }}\Resources\{{ Model }}Resource\Pages\Create{{ Model }}::class)
+                    // leave out required 'name'
+                    ->fillForm([
+                        $field => null,
+                    ])
+                    ->call('create')
+                    ->assertHasErrors([
+                        "data.{$field}"   => 'required',
+                    ]);
+
+                    Livewire::test(\App\Filament\{{ panel_as_title }}\Resources\{{ Model }}Resource\Pages\Edit{{ Model }}::class, [
+                        'record' => $this->model->getKey(),
+                    ])
+                    ->fillForm([
+                        $field => null,
+                    ])
+                    ->call('save')
+                    ->assertHasErrors([
+                        "data.{$field}"   => 'required',
+                    ]);
+            })->with([
+                'name'
+            ]);
+        });
+    });
+});
+
+it('shows correct navigation sort', function () {
+    expect(AgentResource::getNavigationSort())->toBe(3);
+});
