@@ -2,7 +2,7 @@
 
 use Dainsys\FilamentHelpers\Console\MakeFilamentResourceTestCommand;
 
-it('creates correct file', function() {
+it('creates correct file', function () {
     $this->artisan('dainsys:make-filament-resource-test', ['model' => $this->testModel, 'panel' => $this->testPanel])
         ->assertExitCode(0);
 

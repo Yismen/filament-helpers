@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'stubs_publishes_dir' => 'stubs/dainsys/'
+    'stubs_publishes_dir' => 'stubs/dainsys/',
 ];

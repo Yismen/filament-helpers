@@ -19,14 +19,11 @@ class FilamentHelpersServiceProvider extends ServiceProvider
         }
     }
 
-    public function register(): void
-    {
-        
-    }
+    public function register(): void {}
 
     protected function publishesStubs(): self
-    {        
-            // Publish stub if desired
+    {
+        // Publish stub if desired
         $this->publishes([
             __DIR__.'/../stubs/' => base_path(config('dainsys-filament-helpers.stubs_publishes_dir', 'stubs/dainsys/')),
         ], 'dainsys-filament-helpers-stubs');

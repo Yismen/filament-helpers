@@ -12,7 +12,7 @@ trait HasFilamentPanels
             $panels[] = $this->panel->getId();
         }
 
-        if(empty($panels)) {
+        if (empty($panels)) {
             $panels[] = 'admin';
         }
 

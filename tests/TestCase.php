@@ -2,11 +2,10 @@
 
 namespace Dainsys\FilamentHelpers\Tests;
 
-use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use Dainsys\FilamentHelpers\FilamentHelpersServiceProvider;
 use Filament\FilamentServiceProvider;
-use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Livewire\LivewireServiceProvider;
+use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 abstract class TestCase extends OrchestraTestCase
 {
@@ -17,6 +16,5 @@ abstract class TestCase extends OrchestraTestCase
             FilamentServiceProvider::class,
             LivewireServiceProvider::class,
         ];
-    } 
-    
+    }
 }
