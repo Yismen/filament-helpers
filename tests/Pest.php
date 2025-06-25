@@ -17,6 +17,9 @@ pest()->extend(\Dainsys\FilamentHelpers\Tests\TestCase::class)
 
 uses()
     ->beforeEach(function () {
+        $this->testModel = 'User';
+
+        $this->testPanel = 'admin';
         // ensure tests directory is clean
         if (\file_exists($this->testsPath = base_path('tests\Feature\Filament'))) {
             \Illuminate\Support\Facades\File::deleteDirectory($this->testsPath);
