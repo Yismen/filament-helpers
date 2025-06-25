@@ -15,7 +15,8 @@ it('prompts for missing model name', function () {
         ->expectsQuestion(
             'What is the model name corresponding to the filament resource?',
             $this->testModel
-        );
+        )
+        ->assertExitCode(0);
 });
 
 it('prompts for missing panel name', function () {
@@ -24,5 +25,6 @@ it('prompts for missing panel name', function () {
         ->expectsQuestion(
             'Select a panel',
             $this->testPanel
-        );
+        )
+        ->assertExitCode(0);
 });
