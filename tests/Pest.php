@@ -15,6 +15,15 @@ pest()->extend(\Dainsys\FilamentHelpers\Tests\TestCase::class)
  // ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
     ->in('Feature');
 
+uses()
+    ->beforeEach(function () {
+        // ensure tests directory is clean
+        if (\file_exists($this->testsPath = base_path('tests\Feature\Filament'))) {
+            \Illuminate\Support\Facades\File::deleteDirectory($this->testsPath);
+        }
+    })
+    ->in('Feature');
+
 /*
 |--------------------------------------------------------------------------
 | Expectations
@@ -26,10 +35,6 @@ pest()->extend(\Dainsys\FilamentHelpers\Tests\TestCase::class)
 |
 */
 
-expect()->extend('toBeOne', function () {
-    return $this->toBe(1);
-});
-
 /*
 |--------------------------------------------------------------------------
 | Functions
@@ -40,8 +45,3 @@ expect()->extend('toBeOne', function () {
 | global functions to help you to reduce the number of lines of code in your test files.
 |
 */
-
-function something()
-{
-    // ..
-}
