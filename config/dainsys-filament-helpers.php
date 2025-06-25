@@ -1,3 +1,5 @@
 <?php
 
-return [];
+return [
+    'stubs_publishes_dir' => 'stubs/dainsys/'
+];

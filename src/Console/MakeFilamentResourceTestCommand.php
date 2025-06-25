@@ -27,6 +27,7 @@ class MakeFilamentResourceTestCommand extends Command implements PromptsForMissi
     protected $panel;
     protected $panel_as_title;
     protected Filesystem $filesystem;
+    protected string $stub_file_name = 'make-filament-resource-file.stub';
 
     /**
      * The console command description.
@@ -98,13 +99,13 @@ class MakeFilamentResourceTestCommand extends Command implements PromptsForMissi
 
     protected function getStubContent(): string
     {
-        $stub_path = 'stubs/make-filament-resource-file.stub';
+        $stub_path = config('dainsys-filament-helpers.stubs_publishes_dir', 'stubs/dainsys/') . $this->stub_file_name;
         // allow override via published stub
         $custom = base_path($stub_path);
 
         $content = $this->filesystem->exists($custom)
             ? $this->filesystem->get($custom)
-            : $this->filesystem->get(__DIR__.'/../../'. $stub_path);
+            : $this->filesystem->get(__DIR__.'/../../stubs/'. $this->stub_file_name);
 
         return str($content)
             ->replace("{{ panel }}", $this->panel)

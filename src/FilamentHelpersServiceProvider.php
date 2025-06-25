@@ -12,6 +12,7 @@ class FilamentHelpersServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this
                 ->publishesStubs()
+                ->publishesConfig()
                 ->commands([
                     MakeFilamentResourceTestCommand::class,
                 ]);
@@ -23,12 +24,21 @@ class FilamentHelpersServiceProvider extends ServiceProvider
         
     }
 
-    public function publishesStubs(): self
+    protected function publishesStubs(): self
     {        
             // Publish stub if desired
         $this->publishes([
-            __DIR__.'/../stubs/make-filament-resource-test-file.stub' => base_path('stubs/make-filament-resource-test-file.stub'),
-        ], 'make-filament-resource-test-file-stubs');
+            __DIR__.'/../stubs/' => base_path(config('dainsys-filament-helpers.stubs_publishes_dir', 'stubs/dainsys/')),
+        ], 'dainsys-filament-helpers-stubs');
+
+        return $this;
+    }
+
+    protected function publishesConfig(): self
+    {
+        $this->publishes([
+            __DIR__.'/../config/dainsys-filament-helpers.php' => base_path('config/dainsys-filament-helpers.php'),
+        ], 'dainsys-filament-helpers-config');
 
         return $this;
     }
